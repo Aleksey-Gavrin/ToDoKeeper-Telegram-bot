@@ -7,6 +7,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.model.NotificationTask;
@@ -73,17 +74,21 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Scheduled(fixedDelay = 60000)
     public void sendTasks() {
-        List<NotificationTask> listOfTasksToSend = service.findTasksToSend();
-        if (listOfTasksToSend.isEmpty()) {
-            return;
-        }
-        listOfTasksToSend.forEach(task -> {
-            SendMessage message = new SendMessage(task.getChatID(), task.getTaskText());
-            SendResponse response = telegramBot.execute(message);
-            if (response.isOk()) {
-                service.changeIsSendToTrue(task.getId());
+        try {
+            List<NotificationTask> listOfTasksToSend = service.findTasksToSend();
+            if (listOfTasksToSend.isEmpty()) {
+                return;
             }
-        });
+            listOfTasksToSend.forEach(task -> {
+                SendMessage message = new SendMessage(task.getChatID(), task.getTaskText());
+                SendResponse response = telegramBot.execute(message);
+                if (response.isOk()) {
+                    service.changeIsSendToTrue(task.getId());
+                }
+            });
+        } catch (JpaSystemException e) {
+            logger.error("There is no available task to send in DB: " + e.getMessage());
+        }
     }
 
 }

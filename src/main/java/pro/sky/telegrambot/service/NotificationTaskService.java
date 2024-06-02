@@ -22,7 +22,7 @@ public class NotificationTaskService {
         this.taskRepository = taskRepository;
     }
 
-    public void createTask (long chatId, String receivedMessageText) throws IllegalArgumentException {
+    public void createTask(long chatId, String receivedMessageText) throws IllegalArgumentException {
         Matcher matcher = VALID_TASK_PATTERN.matcher(receivedMessageText);
         if (matcher.matches()) {
             String date = matcher.group(1);
