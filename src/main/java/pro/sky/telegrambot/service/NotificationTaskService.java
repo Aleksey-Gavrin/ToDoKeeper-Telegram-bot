@@ -6,8 +6,8 @@ import pro.sky.telegrambot.repository.NotificationTaskRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +22,7 @@ public class NotificationTaskService {
         this.taskRepository = taskRepository;
     }
 
-    public void createTask(long chatId, String receivedMessageText) throws IllegalArgumentException {
+    public void createTask(Long chatId, String receivedMessageText) throws IllegalArgumentException {
         Matcher matcher = VALID_TASK_PATTERN.matcher(receivedMessageText);
         if (matcher.matches()) {
             String date = matcher.group(1);
@@ -41,10 +41,15 @@ public class NotificationTaskService {
     }
 
     public List<NotificationTask> findTasksToSend() {
-        return taskRepository.findTasksToSend(LocalDateTime.now()).orElse(new ArrayList<>());
+        return taskRepository.findTasksToSend(LocalDateTime.now());
     }
 
-    public void changeIsSendToTrue(long id) {
-        taskRepository.setIsSendToTrue(id);
+    public void changeIsSendToTrue(Long id) {
+        Optional<NotificationTask> taskToUpdate = taskRepository.findById(id);
+        taskToUpdate.ifPresent(notificationTask -> {
+                    notificationTask.setSend(true);
+                    taskRepository.save(notificationTask);
+                }
+        );
     }
 }

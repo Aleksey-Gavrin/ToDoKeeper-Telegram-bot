@@ -10,10 +10,10 @@ import java.util.Objects;
 public class NotificationTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "chat_id")
-    private long chatID;
+    private Long chatID;
 
     @Column(name = "date_time")
     private LocalDateTime taskDateTime;
@@ -22,9 +22,9 @@ public class NotificationTask {
     private String taskText;
 
     @Column(name = "is_send")
-    private boolean isSend;
+    private Boolean isSend = false;
 
-    public NotificationTask(long id, long chatID, LocalDateTime taskDateTime, String taskText) {
+    public NotificationTask(Long id, Long chatID, LocalDateTime taskDateTime, String taskText) {
         this.id = id;
         this.chatID = chatID;
         this.taskDateTime = taskDateTime;
@@ -34,7 +34,7 @@ public class NotificationTask {
     public NotificationTask() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -42,7 +42,7 @@ public class NotificationTask {
         this.id = id;
     }
 
-    public long getChatID() {
+    public Long getChatID() {
         return chatID;
     }
 
@@ -66,11 +66,11 @@ public class NotificationTask {
         this.taskText = taskText;
     }
 
-    public boolean isSend() {
+    public Boolean isSend() {
         return isSend;
     }
 
-    public void setSend(boolean send) {
+    public void setSend(Boolean send) {
         isSend = send;
     }
 
@@ -89,7 +89,7 @@ public class NotificationTask {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NotificationTask that = (NotificationTask) o;
-        return getId() == that.getId() && Objects.equals(getTaskDateTime(), that.getTaskDateTime()) &&
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getTaskDateTime(), that.getTaskDateTime()) &&
                 Objects.equals(getTaskText(), that.getTaskText());
     }
 
