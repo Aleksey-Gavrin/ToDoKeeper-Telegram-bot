@@ -2,3 +2,5 @@
 /shelf/
 /workspace.xml
 *.iml
+src/main/resources/application.properties
+target/classes/application.properties
